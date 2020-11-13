@@ -4,6 +4,7 @@ const Web3 = require("web3");
 
 const Kyber = require("./exchanges/kyber");
 const UniswapV1 = require("./exchanges/uniswap-v1");
+const UniswapV2 = require("./exchanges/uniswap-v2");
 const Token = require("./classes/Token");
 const contracts = require("./on-chain/contracts");
 
@@ -25,8 +26,12 @@ async function main() {
   const uniswapV1 = new UniswapV1(ctx);
   const uniswapV1Rate = await uniswapV1.getRate(ETH, DAI, 2);
 
+  const uniswapV2 = new UniswapV2(ctx);
+  const uniswapV2Rate = await uniswapV2.getRate(WETH, DAI, 2);
+
   console.log("Kyber:", kyberRate);
   console.log("Uniswap (v1):", uniswapV1Rate);
+  console.log("Uniswap (v2):", uniswapV2Rate);
 }
 
 main();
