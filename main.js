@@ -3,6 +3,7 @@ require("dotenv").config();
 const Web3 = require("web3");
 
 const Kyber = require("./exchanges/kyber");
+const UniswapV1 = require("./exchanges/uniswap-v1");
 const Token = require("./classes/Token");
 const contracts = require("./on-chain/contracts");
 
@@ -14,13 +15,18 @@ async function main() {
     contracts,
   };
 
+  const ETH = new Token(ctx, "ETH", contracts.mainnet.ETH, 18);
   const WETH = new Token(ctx, "WETH", contracts.mainnet.WETH, 18);
   const DAI = new Token(ctx, "DAI", contracts.mainnet.DAI, 18);
 
   const kyber = new Kyber(ctx);
   const kyberRate = await kyber.getRate(WETH, DAI, 2);
 
+  const uniswapV1 = new UniswapV1(ctx);
+  const uniswapV1Rate = await uniswapV1.getRate(ETH, DAI, 2);
+
   console.log("Kyber:", kyberRate);
+  console.log("Uniswap (v1):", uniswapV1Rate);
 }
 
 main();
