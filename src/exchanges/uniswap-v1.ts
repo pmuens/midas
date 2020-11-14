@@ -1,13 +1,14 @@
-const Exchange = require('../classes/Exchange')
+import Token from '../classes/Token'
+import Exchange from '../classes/Exchange'
 
 class UniswapV1 extends Exchange {
-  async getRate(fromToken, toToken, amount) {
+  async getRate(fromToken: Token, toToken: Token, amount: number): Promise<number> {
     if (fromToken.symbol !== 'ETH') {
       throw new Error('Uniswap v1 only allows to trade ETH -> X pairs')
     }
     const { utils, eth } = this.ctx.web3
-    amount = utils.toBN(amount)
-    amount = utils.toWei(amount, 'ETHER')
+    let amountInBN = utils.toBN(amount)
+    amountInBN = utils.toWei(amountInBN, 'ether')
 
     const { uniswapV1 } = this.ctx.contracts.mainnet
     const factoryAbi = uniswapV1.factory.abi
@@ -19,10 +20,10 @@ class UniswapV1 extends Exchange {
 
     const exchangeContract = new eth.Contract(exchangeAbi, exchangeAddress)
 
-    const result = await exchangeContract.methods.getEthToTokenInputPrice(amount).call()
+    const result = await exchangeContract.methods.getEthToTokenInputPrice(amountInBN).call()
 
-    return parseFloat(utils.fromWei(result, 'ETHER'))
+    return parseFloat(utils.fromWei(result, 'ether'))
   }
 }
 
-module.exports = UniswapV1
+export default UniswapV1

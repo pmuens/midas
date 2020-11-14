@@ -6,5 +6,11 @@ Automated Cryptocurrency Hedge Fund.
 
 ```sh
 # Run main script
-node main.js
+npx ts-node src/main.ts
+
+# Build
+npm run build
+
+# Watch
+npm run watch
 ```

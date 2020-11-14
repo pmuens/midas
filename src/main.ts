@@ -1,14 +1,18 @@
-require('dotenv').config()
+import dotenv from 'dotenv'
+dotenv.config()
 
-const Web3 = require('web3')
+import Web3 from 'web3'
 
-const Kyber = require('./exchanges/kyber')
-const UniswapV1 = require('./exchanges/uniswap-v1')
-const UniswapV2 = require('./exchanges/uniswap-v2')
-const Token = require('./classes/Token')
-const contracts = require('./on-chain/contracts')
+import Kyber from './exchanges/kyber'
+import UniswapV1 from './exchanges/uniswap-v1'
+import UniswapV2 from './exchanges/uniswap-v2'
+import Token from './classes/Token'
+import contracts from './on-chain/contracts'
 
-const web3 = new Web3(process.env.RPC_URL)
+const provider = new Web3.providers.HttpProvider(process.env.RPC_URL as string)
+const web3 = new Web3(provider)
+
+const { log } = console
 
 async function main() {
   const ctx = {
@@ -29,9 +33,9 @@ async function main() {
   const uniswapV2 = new UniswapV2(ctx)
   const uniswapV2Rate = await uniswapV2.getRate(WETH, DAI, 2)
 
-  console.log('Kyber:', kyberRate)
-  console.log('Uniswap (v1):', uniswapV1Rate)
-  console.log('Uniswap (v2):', uniswapV2Rate)
+  log('Kyber:', kyberRate)
+  log('Uniswap (v1):', uniswapV1Rate)
+  log('Uniswap (v2):', uniswapV2Rate)
 }
 
 main()

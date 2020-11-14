@@ -1,6 +1,6 @@
-const kyberNetworkProxyAbi = require('./abi/kyber/network-proxy.json')
-const uniswapV1FactoryAbi = require('./abi/uniswap-v1/factory.json')
-const uniswapV1ExchangeAbi = require('./abi/uniswap-v1/exchange.json')
+import kyberNetworkProxyAbi from './abi/kyber/network-proxy.json'
+import uniswapV1FactoryAbi from './abi/uniswap-v1/factory.json'
+import uniswapV1ExchangeAbi from './abi/uniswap-v1/exchange.json'
 
 const contracts = {
   mainnet: {
@@ -26,4 +26,4 @@ const contracts = {
   }
 }
 
-module.exports = contracts
+export default contracts
