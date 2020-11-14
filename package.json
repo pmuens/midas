@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write .",
     "build": "rm -rf dist && tsc -d",
-    "watch": "rm -rf dist && tsc -w"
+    "watch": "rm -rf dist && tsc -w",
+    "lint": "tslint --project tsconfig.json {src,test}**/*.ts"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,9 @@
     "@tsconfig/node14": "^1.0.0",
     "prettier": "^2.1.2",
     "ts-node": "^9.0.0",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.3.0",
     "typescript": "^4.0.5"
   },
   "dependencies": {
