@@ -3,12 +3,10 @@ dotenv.config()
 
 import Web3 from 'web3'
 
-import Kyber from './exchanges/kyber'
-import UniswapV1 from './exchanges/uniswap-v1'
-import UniswapV2 from './exchanges/uniswap-v2'
-import Token from './classes/Token'
+import { Token } from './classes'
 import { Context } from './utils/types'
 import { loadContracts } from './on-chain/contracts'
+import { Kyber, UniswapV1, UniswapV2 } from './exchanges'
 
 const provider = new Web3.providers.HttpProvider(process.env.INFURA_URL as string)
 const web3 = new Web3(provider)
@@ -23,9 +21,9 @@ async function main() {
   }
 
   const { tokens } = contracts
-  const ETH = new Token(ctx, 'ETH', tokens.ETH.address, 18)
-  const WETH = new Token(ctx, 'WETH', tokens.WETH.address, 18)
-  const DAI = new Token(ctx, 'DAI', tokens.DAI.address, 18)
+  const ETH = new Token(ctx, tokens.ETH.address, 'ETH', 18)
+  const WETH = new Token(ctx, tokens.WETH.address, 'WETH', 18)
+  const DAI = new Token(ctx, tokens.DAI.address, 'DAI', 18)
 
   const kyber = new Kyber(ctx)
   const kyberRate = await kyber.getRate(WETH, DAI, 2)

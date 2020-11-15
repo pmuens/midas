@@ -1,11 +1,11 @@
 import { InfuraProvider } from '@ethersproject/providers'
 import { Fetcher, Route, TokenAmount, TradeType, Trade, Token } from '@uniswap/sdk'
 
-import { default as Towken } from '../classes/Token'
-import Exchange from '../classes/Exchange'
+import { Base, Token as Towken } from '../classes'
+import { Exchange } from '../interfaces'
 import { getChainId, getProjectId } from '../utils/infura'
 
-class UniswapV2 extends Exchange {
+class UniswapV2 extends Base implements Exchange {
   async getRate(fromToken: Towken, toToken: Towken, amount: number): Promise<number> {
     const infuraUrl = process.env.INFURA_URL as string
     const chainId = getChainId(infuraUrl)

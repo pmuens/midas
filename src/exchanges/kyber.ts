@@ -1,7 +1,7 @@
-import Token from '../classes/Token'
-import Exchange from '../classes/Exchange'
+import { Base, Token } from '../classes'
+import { Exchange } from '../interfaces'
 
-class Kyber extends Exchange {
+class Kyber extends Base implements Exchange {
   async getRate(fromToken: Token, toToken: Token, amount: number): Promise<number> {
     const { utils, eth } = this.ctx.web3
     const amountInBN = utils.toBN(utils.toWei(amount.toString()))

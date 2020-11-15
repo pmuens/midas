@@ -1,7 +1,7 @@
-import Token from '../classes/Token'
-import Exchange from '../classes/Exchange'
+import { Base, Token } from '../classes'
+import { Exchange } from '../interfaces'
 
-class UniswapV1 extends Exchange {
+class UniswapV1 extends Base implements Exchange {
   async getRate(fromToken: Token, toToken: Token, amount: number): Promise<number> {
     if (fromToken.symbol !== 'ETH') {
       throw new Error('Uniswap v1 only allows to trade ETH -> X pairs')
