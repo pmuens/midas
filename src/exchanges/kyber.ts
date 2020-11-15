@@ -6,7 +6,7 @@ class Kyber extends Exchange {
     const { utils, eth } = this.ctx.web3
     const amountInBN = utils.toBN(utils.toWei(amount.toString()))
 
-    const { kyber } = this.ctx.contracts.mainnet
+    const { kyber } = this.ctx.contracts
     const networkProxyAbi = kyber.networkProxy.abi
     const networkProxyAddress = kyber.networkProxy.address
     const networkProxyContract = new eth.Contract(networkProxyAbi, networkProxyAddress)

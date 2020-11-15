@@ -1,19 +1,24 @@
-import { CloudflareProvider } from '@ethersproject/providers'
-import { ChainId, Fetcher, Route, TokenAmount, TradeType, Trade, Token } from '@uniswap/sdk'
+import { InfuraProvider } from '@ethersproject/providers'
+import { Fetcher, Route, TokenAmount, TradeType, Trade, Token } from '@uniswap/sdk'
 
 import { default as Towken } from '../classes/Token'
 import Exchange from '../classes/Exchange'
+import { getChainId, getProjectId } from '../utils/infura'
 
 class UniswapV2 extends Exchange {
   async getRate(fromToken: Towken, toToken: Towken, amount: number): Promise<number> {
-    const uniFromToken = new Token(ChainId.MAINNET, fromToken.address, fromToken.decimals)
-    const uniToToken = new Token(ChainId.MAINNET, toToken.address, toToken.decimals)
+    const infuraUrl = process.env.INFURA_URL as string
+    const chainId = getChainId(infuraUrl)
+    const projectId = getProjectId(infuraUrl)
+
+    const uniFromToken = new Token(chainId, fromToken.address, fromToken.decimals)
+    const uniToToken = new Token(chainId, toToken.address, toToken.decimals)
 
     // NOTE: Apparently there's no way right now to inject our desired amount, rather
     // Uniswap always defaults to 1 unit
     const preparedAmount = this.ctx.web3.utils.toBN(10 ** fromToken.decimals).toString()
 
-    const provider = new CloudflareProvider()
+    const provider = new InfuraProvider(chainId, projectId)
     const pair = await Fetcher.fetchPairData(uniFromToken, uniToToken, provider)
 
     const route = new Route([pair], uniFromToken)

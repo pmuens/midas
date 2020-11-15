@@ -7,22 +7,25 @@ import Kyber from './exchanges/kyber'
 import UniswapV1 from './exchanges/uniswap-v1'
 import UniswapV2 from './exchanges/uniswap-v2'
 import Token from './classes/Token'
-import contracts from './on-chain/contracts'
+import { Context } from './utils/types'
+import { loadContracts } from './on-chain/contracts'
 
-const provider = new Web3.providers.HttpProvider(process.env.RPC_URL as string)
+const provider = new Web3.providers.HttpProvider(process.env.INFURA_URL as string)
 const web3 = new Web3(provider)
 
 const { log } = console
 
 async function main() {
-  const ctx = {
+  const contracts = loadContracts()
+  const ctx: Context = {
     web3,
     contracts
   }
 
-  const ETH = new Token(ctx, 'ETH', contracts.mainnet.ETH, 18)
-  const WETH = new Token(ctx, 'WETH', contracts.mainnet.WETH, 18)
-  const DAI = new Token(ctx, 'DAI', contracts.mainnet.DAI, 18)
+  const { tokens } = contracts
+  const ETH = new Token(ctx, 'ETH', tokens.ETH.address, 18)
+  const WETH = new Token(ctx, 'WETH', tokens.WETH.address, 18)
+  const DAI = new Token(ctx, 'DAI', tokens.DAI.address, 18)
 
   const kyber = new Kyber(ctx)
   const kyberRate = await kyber.getRate(WETH, DAI, 2)

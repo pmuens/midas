@@ -10,7 +10,7 @@ class UniswapV1 extends Exchange {
     let amountInBN = utils.toBN(amount)
     amountInBN = utils.toWei(amountInBN, 'ether')
 
-    const { uniswapV1 } = this.ctx.contracts.mainnet
+    const { uniswapV1 } = this.ctx.contracts
     const factoryAbi = uniswapV1.factory.abi
     const factoryAddress = uniswapV1.factory.address
     const exchangeAbi = uniswapV1.exchange.abi
