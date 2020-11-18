@@ -1,7 +1,9 @@
 // tslint:disable:no-submodule-imports no-implicit-dependencies
 import { HardhatUserConfig } from 'hardhat/types'
 
+import '@nomiclabs/hardhat-web3'
 import dotenv from 'dotenv'
+
 dotenv.config()
 
 const cache = './cache'

@@ -16,4 +16,7 @@ npm run watch
 
 # Compile Smart Contracts
 npx hardhat compile
+
+# Run Hardhat scripts
+npx hardhat run --network <network> scripts/<script>.ts
 ```

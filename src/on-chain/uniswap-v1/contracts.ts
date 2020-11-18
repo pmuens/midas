@@ -8,7 +8,19 @@ const contracts = {
       abi: factoryAbi
     },
     exchange: {
-      address: '0x09cabEC1eAd1c0Ba254B09efb3EE13841712bE14',
+      // Exchanges do not have specific addresses
+      address: '0x0000000000000000000000000000000000000000',
+      abi: exchangeAbi
+    }
+  },
+  kovan: {
+    factory: {
+      address: '0xD3E51Ef092B2845f10401a0159B2B96e8B6c3D30',
+      abi: factoryAbi
+    },
+    exchange: {
+      // Exchanges do not have specific addresses
+      address: '0x0000000000000000000000000000000000000000',
       abi: exchangeAbi
     }
   }
