@@ -8,6 +8,11 @@ import { Context } from './utils/types'
 import { loadContracts } from './on-chain/contracts'
 import { Kyber, UniswapV1, UniswapV2 } from './exchanges'
 
+process.on('unhandledRejection', (error) => {
+  // tslint:disable-next-line:no-console
+  console.error(error)
+})
+
 const provider = new Web3.providers.HttpProvider(process.env.INFURA_URL as string)
 const web3 = new Web3(provider)
 
