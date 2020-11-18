@@ -13,4 +13,7 @@ npm run build
 
 # Watch
 npm run watch
+
+# Compile Smart Contracts
+npx hardhat compile
 ```

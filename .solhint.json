@@ -9,6 +9,6 @@
     "private-vars-leading-underscore": "error",
     "max-line-length": ["warn", 150],
     "reason-string": ["warn", { "maxLength": 50 }],
-    "compiler-version": ["off", "^0.7.0"]
+    "compiler-version": ["off", "^0.6.12"]
   }
 }

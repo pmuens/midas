@@ -2,3 +2,5 @@ node_modules
 tmp
 dist
 coverage
+artifacts
+cache

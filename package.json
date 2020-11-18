@@ -8,13 +8,14 @@
     "format": "prettier --write .",
     "build": "rm -rf dist && tsc -d",
     "watch": "rm -rf dist && tsc -w",
-    "lint": "tslint --project tsconfig.json {src,test}**/*.ts && solhint src/**/*.sol"
+    "lint": "tslint --project tsconfig.json && solhint src/**/*.sol"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@tsconfig/node14": "^1.0.0",
+    "hardhat": "^2.0.3",
     "prettier": "^2.1.2",
     "prettier-plugin-solidity": "^1.0.0-alpha.60",
     "solhint": "^3.3.2",
