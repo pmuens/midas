@@ -1,0 +1,14 @@
+const contracts = {
+  mainnet: {
+    ContractName: {
+      address: '0x0000000000000000000000000000000000000000'
+    }
+  },
+  kovan: {
+    ContractName: {
+      address: '0x0000000000000000000000000000000000000000'
+    }
+  }
+}
+
+export default contracts

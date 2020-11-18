@@ -3,23 +3,18 @@
 import '@nomiclabs/hardhat-web3'
 
 import hre from 'hardhat'
-import { join } from 'path'
-import { readJSON } from 'fs-extra'
 
+import { loadArtifact } from '../hardhat.utils'
 import { loadContracts } from '../src/on-chain/contracts'
 
+const GAS = 4000000
 const { log, error } = console
-const { sources, artifacts } = hre.config.paths
+
 const privateKey = process.env.PRIVATE_KEY as string
 
-async function loadArtifact(name: string): Promise<any> {
-  const projectRoot = join(__dirname, '..')
-  const pathToContracts = sources.replace(projectRoot, '')
-  return readJSON(join(artifacts, pathToContracts, `${name}.sol`, `${name}.json`))
-}
-
 async function deployContract(deployer: string, name: string, args: string[]): Promise<string> {
-  const { abi, bytecode } = await loadArtifact(name)
+  const { sources, artifacts } = hre.config.paths
+  const { abi, bytecode } = await loadArtifact(sources, artifacts, name)
   const instance = new hre.web3.eth.Contract(abi)
   return new Promise((resolve, reject) => {
     return instance
@@ -29,7 +24,7 @@ async function deployContract(deployer: string, name: string, args: string[]): P
       })
       .send({
         from: deployer,
-        gas: 4000000
+        gas: GAS
       })
       .then((result) => {
         resolve(result.options.address)

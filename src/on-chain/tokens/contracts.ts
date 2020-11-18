@@ -8,6 +8,9 @@ const contracts = {
     },
     DAI: {
       address: '0x6b175474e89094c44da98b954eedeac495271d0f'
+    },
+    BAT: {
+      address: '0x0D8775F648430679A709E98d2b0Cb6250d2887EF'
     }
   },
   kovan: {
@@ -19,6 +22,9 @@ const contracts = {
     },
     DAI: {
       address: '0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD'
+    },
+    BAT: {
+      address: '0x2d12186Fbb9f9a8C28B3FfdD4c42920f8539D738'
     }
   }
 }
