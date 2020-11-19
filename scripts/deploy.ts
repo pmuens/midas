@@ -11,6 +11,8 @@ const GAS = 4000000
 const { log, error } = console
 
 const privateKey = process.env.PRIVATE_KEY as string
+const { accounts } = hre.web3.eth
+const account = accounts.wallet.add(privateKey)
 
 async function deployContract(deployer: string, name: string, args: string[]): Promise<string> {
   const { sources, artifacts } = hre.config.paths
@@ -33,17 +35,36 @@ async function deployContract(deployer: string, name: string, args: string[]): P
   })
 }
 
-async function main() {
-  const { accounts } = hre.web3.eth
-  const account = accounts.wallet.add(privateKey)
-  const contracts = loadContracts()
-
-  // --- AaveFlashLoanUniswapV1 ---
+async function aaveFlashLoan(contracts: any): Promise<string> {
   const name = 'AaveFlashLoanUniswapV1'
   const addressProvider = contracts.aave.lendingPoolAddressesProvider.address
-  const address = await deployContract(account.address, name, [addressProvider])
+  return deployContract(account.address, name, [addressProvider])
+}
 
-  log(`Deployed "${name}" at ${address}`)
+async function dydxFlashLoan(contracts: any): Promise<string> {
+  const name = 'DyDxFlashLoan'
+  const dydxSoloMargin = contracts.dydx.soloMargin.address
+  const kyberNetworkProxy = contracts.kyber.networkProxy.address
+  const uniswapV2Router02 = contracts.uniswapV2.router02.address
+  return deployContract(account.address, name, [
+    dydxSoloMargin,
+    kyberNetworkProxy,
+    uniswapV2Router02
+  ])
+}
+
+async function main() {
+  const contracts = loadContracts()
+
+  let address
+
+  // --- AaveFlashLoanUniswapV1 ---
+  address = await aaveFlashLoan(contracts)
+  log(`Deployed "AaveFlashLoanUniswapV1" at ${address}`)
+
+  // --- DyDxFlashLoan ---
+  address = await dydxFlashLoan(contracts)
+  log(`Deployed "DyDxFlashLoan" at ${address}`)
 }
 
 main()
