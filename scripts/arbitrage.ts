@@ -17,13 +17,15 @@ const { sources, artifacts } = hre.config.paths
 const account = accounts.wallet.add(privateKey)
 
 async function aaveFlashLoan(assetA: string, assetB: string, amount: number): Promise<string> {
-  const UNISWAP_FACTORY_A_ADDRESS = '0xECc6C0542710a0EF07966D7d1B10fA38bbb86523'
-  const UNISWAP_FACTORY_B_ADDRESS = '0x54Ac34e5cE84C501165674782582ADce2FDdc8F4'
+  const DIRECTION = {
+    KYBER_TO_UNISWAP_V2: 0,
+    UNISWAP_V2_TO_KYBER: 1
+  }
   const context = hre.web3.eth.abi.encodeParameters(
-    ['address', 'address'],
-    [UNISWAP_FACTORY_A_ADDRESS, UNISWAP_FACTORY_B_ADDRESS]
+    ['address', 'uint256'],
+    [account.address, DIRECTION.UNISWAP_V2_TO_KYBER]
   )
-  const name = 'AaveFlashLoanUniswapV1'
+  const name = 'AaveFlashLoan'
   const { address } = await loadDeployment(name)
   const { abi } = await loadArtifact(sources, artifacts, name)
 
@@ -62,9 +64,9 @@ async function main() {
   let tx
   const amount = 1
 
-  // --- AaveFlashLoanUniswapV1 ---
-  tx = await aaveFlashLoan(contracts.tokens.DAI.address, contracts.tokens.BAT.address, amount)
-  log(`"AaveFlashLoanUniswapV1" arbitrage succeeded: ${tx}`)
+  // --- AaveFlashLoan ---
+  tx = await aaveFlashLoan(contracts.tokens.DAI.address, contracts.tokens.WETH.address, amount)
+  log(`"AaveFlashLoan" arbitrage succeeded: ${tx}`)
 
   // --- DyDxFlashLoan ---
   tx = await dydxFlashLoan(contracts.tokens.SAI.address, contracts.tokens.WETH.address, amount)

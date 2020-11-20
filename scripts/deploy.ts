@@ -36,9 +36,15 @@ async function deployContract(deployer: string, name: string, args: string[]): P
 }
 
 async function aaveFlashLoan(contracts: any): Promise<string> {
-  const name = 'AaveFlashLoanUniswapV1'
-  const addressProvider = contracts.aave.lendingPoolAddressesProvider.address
-  return deployContract(account.address, name, [addressProvider])
+  const name = 'AaveFlashLoan'
+  const aaveLendingPoolAddressesProvider = contracts.aave.lendingPoolAddressesProvider.address
+  const kyberNetworkProxy = contracts.kyber.networkProxy.address
+  const uniswapV2Router02 = contracts.uniswapV2.router02.address
+  return deployContract(account.address, name, [
+    aaveLendingPoolAddressesProvider,
+    kyberNetworkProxy,
+    uniswapV2Router02
+  ])
 }
 
 async function dydxFlashLoan(contracts: any): Promise<string> {
@@ -58,9 +64,9 @@ async function main() {
 
   let address
 
-  // --- AaveFlashLoanUniswapV1 ---
+  // --- AaveFlashLoan ---
   address = await aaveFlashLoan(contracts)
-  log(`Deployed "AaveFlashLoanUniswapV1" at ${address}`)
+  log(`Deployed "AaveFlashLoan" at ${address}`)
 
   // --- DyDxFlashLoan ---
   address = await dydxFlashLoan(contracts)
