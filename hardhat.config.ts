@@ -16,7 +16,16 @@ const privateKey = process.env.PRIVATE_KEY as string
 
 const config: HardhatUserConfig = {
   networks: {
-    hardhat: {},
+    hardhat: {
+      forking: {
+        url: `https://mainnet.infura.io/v3/${infuraProjectId}`
+      }
+    },
+    local: {
+      url: 'http://127.0.0.1:8545/',
+      accounts: [privateKey],
+      timeout: 120000 // 2 Minutes
+    },
     kovan: {
       url: `https://kovan.infura.io/v3/${infuraProjectId}`,
       accounts: [privateKey]
