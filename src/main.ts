@@ -5,7 +5,7 @@ import Web3 from 'web3'
 
 import { Token } from './classes'
 import { Context } from './utils/types'
-import { loadContracts } from './on-chain/contracts'
+import contracts from './on-chain/contracts'
 import { Kyber, UniswapV1, UniswapV2 } from './exchanges'
 
 process.on('unhandledRejection', (error) => {
@@ -19,16 +19,14 @@ const web3 = new Web3(provider)
 const { log } = console
 
 async function main() {
-  const contracts = loadContracts()
   const ctx: Context = {
     web3,
     contracts
   }
 
-  const { tokens } = contracts
-  const ETH = new Token(ctx, tokens.ETH.address, 'ETH', 18)
-  const WETH = new Token(ctx, tokens.WETH.address, 'WETH', 18)
-  const DAI = new Token(ctx, tokens.DAI.address, 'DAI', 18)
+  const ETH = new Token(ctx, contracts.tokens.ETH.address, 'ETH', 18)
+  const WETH = new Token(ctx, contracts.tokens.WETH.address, 'WETH', 18)
+  const DAI = new Token(ctx, contracts.tokens.DAI.address, 'DAI', 18)
 
   const kyber = new Kyber(ctx)
   const kyberRate = await kyber.getRate(WETH, DAI, 2)

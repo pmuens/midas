@@ -5,7 +5,7 @@ import '@nomiclabs/hardhat-web3'
 import hre from 'hardhat'
 
 import { loadArtifact, loadDeployment } from '../hardhat.utils'
-import { loadContracts } from '../src/on-chain/contracts'
+import contracts from '../src/on-chain/contracts'
 
 const GAS = 4000000
 const { log, error } = console
@@ -59,8 +59,6 @@ async function dydxFlashLoan(assetA: string, assetB: string, amount: number): Pr
 }
 
 async function main() {
-  const contracts = loadContracts()
-
   let tx
   const amount = 1
 

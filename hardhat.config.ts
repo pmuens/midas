@@ -25,10 +25,6 @@ const config: HardhatUserConfig = {
       url: 'http://127.0.0.1:8545/',
       accounts: [privateKey],
       timeout: 120000 // 2 Minutes
-    },
-    kovan: {
-      url: `https://kovan.infura.io/v3/${infuraProjectId}`,
-      accounts: [privateKey]
     }
   },
   solidity: {

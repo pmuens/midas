@@ -5,7 +5,7 @@ import '@nomiclabs/hardhat-web3'
 import hre from 'hardhat'
 
 import { loadArtifact } from '../hardhat.utils'
-import { loadContracts } from '../src/on-chain/contracts'
+import contracts from '../src/on-chain/contracts'
 
 const GAS = 4000000
 const { log, error } = console
@@ -60,8 +60,6 @@ async function dydxFlashLoan(contracts: any): Promise<string> {
 }
 
 async function main() {
-  const contracts = loadContracts()
-
   let address
 
   // --- AaveFlashLoan ---
