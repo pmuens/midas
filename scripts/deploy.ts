@@ -4,7 +4,7 @@ import '@nomiclabs/hardhat-web3'
 
 import hre from 'hardhat'
 
-import { loadArtifact } from '../hardhat.utils'
+import { loadArtifact, saveDeployment } from '../hardhat.utils'
 import contracts from '../src/on-chain/contracts'
 
 const GAS = 4000000
@@ -40,11 +40,13 @@ async function aaveFlashLoan(contracts: any): Promise<string> {
   const aaveLendingPoolAddressesProvider = contracts.aave.lendingPoolAddressesProvider.address
   const kyberNetworkProxy = contracts.kyber.networkProxy.address
   const uniswapV2Router02 = contracts.uniswapV2.router02.address
-  return deployContract(account.address, name, [
+  const address = await deployContract(account.address, name, [
     aaveLendingPoolAddressesProvider,
     kyberNetworkProxy,
     uniswapV2Router02
   ])
+  await saveDeployment(name, address)
+  return address
 }
 
 async function dydxFlashLoan(contracts: any): Promise<string> {
@@ -52,11 +54,13 @@ async function dydxFlashLoan(contracts: any): Promise<string> {
   const dydxSoloMargin = contracts.dydx.soloMargin.address
   const kyberNetworkProxy = contracts.kyber.networkProxy.address
   const uniswapV2Router02 = contracts.uniswapV2.router02.address
-  return deployContract(account.address, name, [
+  const address = await deployContract(account.address, name, [
     dydxSoloMargin,
     kyberNetworkProxy,
     uniswapV2Router02
   ])
+  await saveDeployment(name, address)
+  return address
 }
 
 async function main() {

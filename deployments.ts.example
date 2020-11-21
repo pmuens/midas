@@ -1,7 +1,0 @@
-const contracts: { [index: string]: any }  = {
-  ContractName: {
-    address: '0x0000000000000000000000000000000000000000'
-  }
-}
-
-export default contracts

@@ -1,9 +1,9 @@
 // tslint:disable: no-implicit-dependencies
 
 import { join } from 'path'
-import { readJSON } from 'fs-extra'
+import { readJSON, writeJSON, ensureDir } from 'fs-extra'
 
-import deployments from './deployments'
+const deploymentsDirPath = join(__dirname, 'deployments')
 
 export async function loadArtifact(sources: string, artifacts: string, name: string): Promise<any> {
   const projectRoot = __dirname
@@ -11,6 +11,15 @@ export async function loadArtifact(sources: string, artifacts: string, name: str
   return readJSON(join(artifacts, pathToContracts, `${name}.sol`, `${name}.json`))
 }
 
-export function loadDeployment(name: string): any {
-  return deployments[name]
+export async function saveDeployment(name: string, address: string): Promise<string> {
+  await ensureDir(deploymentsDirPath)
+  const filePath = join(deploymentsDirPath, `${name}.json`)
+  await writeJSON(filePath, {
+    address
+  })
+  return filePath
+}
+
+export async function loadDeployment(name: string): Promise<any> {
+  return readJSON(join(deploymentsDirPath, `${name}.json`))
 }
