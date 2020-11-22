@@ -7,7 +7,10 @@ const networkToChainId: { [index: string]: number } = {
 }
 
 function extractInfo(infuraUrl: string): { [index: string]: any } {
-  const regex = /https:\/\/(\w+)\.infura\.io\/v\d\/(.+)/
+  let regex = /https:\/\/(\w+)\.infura\.io\/v\d\/(.+)/
+  if (infuraUrl.startsWith('wss://')) {
+    regex = /wss:\/\/(\w+)\.infura\.io\/ws\/v\d\/(.+)/
+  }
   const result = regex.exec(infuraUrl)
   const network: string = result![1]
   const projectId = result![2]
@@ -29,4 +32,12 @@ export function getChainId(infuraUrl: string): number {
 
 export function getProjectId(infuraUrl: string): number {
   return extractInfo(infuraUrl).projectId
+}
+
+export function getHttpUrl(projectId: string, network: string = 'mainnet'): string {
+  return `https://${network}.infura.io/v3/${projectId}`
+}
+
+export function getWebsocketUrl(projectId: string, network: string = 'mainnet'): string {
+  return `wss://${network}.infura.io/ws/v3/${projectId}`
 }

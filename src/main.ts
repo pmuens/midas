@@ -5,6 +5,7 @@ import Web3 from 'web3'
 
 import { Token } from './classes'
 import { Context } from './utils/types'
+import { getHttpUrl } from './utils/infura'
 import contracts from './on-chain/contracts'
 import { Kyber, UniswapV1, UniswapV2 } from './exchanges'
 import { updateEthPrice } from './utils/misc'
@@ -14,7 +15,8 @@ process.on('unhandledRejection', (error) => {
   console.error(error)
 })
 
-const provider = new Web3.providers.HttpProvider(process.env.INFURA_URL as string)
+const infuraHttpUrl = getHttpUrl(process.env.INFURA_PROJECT_ID as string)
+const provider = new Web3.providers.HttpProvider(infuraHttpUrl)
 const web3 = new Web3(provider)
 
 const { log } = console

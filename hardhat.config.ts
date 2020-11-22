@@ -4,6 +4,8 @@ import { HardhatUserConfig } from 'hardhat/types'
 import '@nomiclabs/hardhat-web3'
 import dotenv from 'dotenv'
 
+import { getHttpUrl } from './src/utils/infura'
+
 dotenv.config()
 
 const cache = './cache'
@@ -11,14 +13,14 @@ const artifacts = './artifacts'
 const tests = './src/tests'
 const sources = './src/contracts'
 
-const infuraProjectId = (process.env.INFURA_URL as string).split('/').pop()
+const infuraHttpUrl = getHttpUrl(process.env.INFURA_PROJECT_ID as string)
 const privateKey = process.env.PRIVATE_KEY as string
 
 const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       forking: {
-        url: `https://mainnet.infura.io/v3/${infuraProjectId}`
+        url: infuraHttpUrl
       }
     },
     local: {

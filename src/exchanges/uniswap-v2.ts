@@ -3,13 +3,13 @@ import { Fetcher, Route, TokenAmount, TradeType, Trade, Token } from '@uniswap/s
 
 import { Base, Token as Towken } from '../classes'
 import { Exchange } from '../interfaces'
-import { getChainId, getProjectId } from '../utils/infura'
+import { getChainId, getProjectId, getHttpUrl } from '../utils/infura'
 import { Wei } from '../utils/types'
 
 class UniswapV2 extends Base implements Exchange {
   async getRate(fromToken: Towken, toToken: Towken, amount: number): Promise<Wei> {
+    const infuraUrl = getHttpUrl(process.env.INFURA_PROJECT_ID as string)
     const { utils } = this.ctx.web3
-    const infuraUrl = process.env.INFURA_URL as string
     const chainId = getChainId(infuraUrl)
     const projectId = getProjectId(infuraUrl)
     const amountInBN = utils.toBN(amount)
