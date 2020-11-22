@@ -37,9 +37,9 @@ async function main() {
   const uniswapV2 = new UniswapV2(ctx)
   const uniswapV2Rate = await uniswapV2.getRate(WETH, DAI, 2)
 
-  log('Kyber:', kyberRate)
-  log('Uniswap (v1):', uniswapV1Rate)
-  log('Uniswap (v2):', uniswapV2Rate)
+  log('Kyber:', web3.utils.fromWei(kyberRate))
+  log('Uniswap (v1):', web3.utils.fromWei(uniswapV1Rate))
+  log('Uniswap (v2):', web3.utils.fromWei(uniswapV2Rate))
 }
 
 main()

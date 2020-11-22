@@ -1,8 +1,10 @@
 import { Base, Token } from '../classes'
 import { Exchange } from '../interfaces'
+import { ONE_WEI } from '../utils/constants'
+import { Wei } from '../utils/types'
 
 class Kyber extends Base implements Exchange {
-  async getRate(fromToken: Token, toToken: Token, amount: number): Promise<number> {
+  async getRate(fromToken: Token, toToken: Token, amount: number): Promise<Wei> {
     const { utils, eth } = this.ctx.web3
     const amountInBN = utils.toBN(utils.toWei(amount.toString()))
 
@@ -14,9 +16,7 @@ class Kyber extends Base implements Exchange {
     const result = await networkProxyContract.methods
       .getExpectedRate(fromToken.address, toToken.address, amountInBN)
       .call()
-
-    const amountInNum = parseFloat(utils.fromWei(amountInBN, 'ether'))
-    return parseFloat(utils.fromWei(result.expectedRate, 'ether')) * amountInNum
+    return amountInBN.mul(utils.toBN(result.expectedRate)).div(ONE_WEI)
   }
 }
 

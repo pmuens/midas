@@ -1,8 +1,9 @@
 import { Base, Token } from '../classes'
 import { Exchange } from '../interfaces'
+import { Wei } from '../utils/types'
 
 class UniswapV1 extends Base implements Exchange {
-  async getRate(fromToken: Token, toToken: Token, amount: number): Promise<number> {
+  async getRate(fromToken: Token, toToken: Token, amount: number): Promise<Wei> {
     if (fromToken.symbol !== 'ETH') {
       throw new Error('Uniswap v1 only allows to trade ETH -> X pairs')
     }
@@ -17,12 +18,10 @@ class UniswapV1 extends Base implements Exchange {
     const factoryContract = new eth.Contract(factoryAbi, factoryAddress)
 
     const exchangeAddress = await factoryContract.methods.getExchange(toToken.address).call()
-
     const exchangeContract = new eth.Contract(exchangeAbi, exchangeAddress)
 
     const result = await exchangeContract.methods.getEthToTokenInputPrice(amountInBN).call()
-
-    return parseFloat(utils.fromWei(result, 'ether'))
+    return utils.toBN(result)
   }
 }
 
