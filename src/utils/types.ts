@@ -6,4 +6,5 @@ export type Wei = BN
 export interface Context {
   web3: Web3
   contracts: any
+  ether?: BN // Ether as BigNum
 }

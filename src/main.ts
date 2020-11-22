@@ -7,6 +7,7 @@ import { Token } from './classes'
 import { Context } from './utils/types'
 import contracts from './on-chain/contracts'
 import { Kyber, UniswapV1, UniswapV2 } from './exchanges'
+import { updateEthPrice } from './utils/misc'
 
 process.on('unhandledRejection', (error) => {
   // tslint:disable-next-line:no-console
@@ -23,6 +24,10 @@ async function main() {
     web3,
     contracts
   }
+
+  // Start monitoring the ETH price
+  setInterval(() => updateEthPrice(ctx), 15000)
+  setInterval(() => log(`Current ETH price: ~${ctx.ether?.toString()} USD`), 20000)
 
   const ETH = new Token(ctx, contracts.tokens.ETH.address, 'ETH', 18)
   const WETH = new Token(ctx, contracts.tokens.WETH.address, 'WETH', 18)
