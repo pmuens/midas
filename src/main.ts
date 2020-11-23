@@ -35,18 +35,20 @@ async function main() {
   const WETH = new Token(ctx, contracts.tokens.WETH.address, 'WETH', 18)
   const DAI = new Token(ctx, contracts.tokens.DAI.address, 'DAI', 18)
 
+  const amount = Web3.utils.toBN(Web3.utils.toWei('2'))
+
   const kyber = new Kyber(ctx)
-  const kyberRate = await kyber.getRate(WETH, DAI, 2)
+  const kyberRate = await kyber.getRate(WETH, DAI, amount)
 
   const uniswapV1 = new UniswapV1(ctx)
-  const uniswapV1Rate = await uniswapV1.getRate(ETH, DAI, 2)
+  const uniswapV1Rate = await uniswapV1.getRate(ETH, DAI, amount)
 
   const uniswapV2 = new UniswapV2(ctx)
-  const uniswapV2Rate = await uniswapV2.getRate(WETH, DAI, 2)
+  const uniswapV2Rate = await uniswapV2.getRate(WETH, DAI, amount)
 
-  log('Kyber:', web3.utils.fromWei(kyberRate))
-  log('Uniswap (v1):', web3.utils.fromWei(uniswapV1Rate))
-  log('Uniswap (v2):', web3.utils.fromWei(uniswapV2Rate))
+  log('Kyber:', Web3.utils.fromWei(kyberRate))
+  log('Uniswap (v1):', Web3.utils.fromWei(uniswapV1Rate))
+  log('Uniswap (v2):', Web3.utils.fromWei(uniswapV2Rate))
 }
 
 main()

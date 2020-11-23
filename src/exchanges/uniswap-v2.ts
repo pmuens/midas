@@ -7,12 +7,12 @@ import { getChainId, getProjectId, getHttpUrl } from '../utils/infura'
 import { Wei } from '../utils/types'
 
 class UniswapV2 extends Base implements Exchange {
-  async getRate(fromToken: Towken, toToken: Towken, amount: number): Promise<Wei> {
+  async getRate(fromToken: Towken, toToken: Towken, amount: Wei): Promise<Wei> {
     const infuraUrl = getHttpUrl(process.env.INFURA_PROJECT_ID as string)
     const { utils } = this.ctx.web3
     const chainId = getChainId(infuraUrl)
     const projectId = getProjectId(infuraUrl)
-    const amountInBN = utils.toBN(amount)
+    const amountInBN = utils.toBN(utils.fromWei(amount))
 
     const uniFromToken = new Token(chainId, fromToken.address, fromToken.decimals)
     const uniToToken = new Token(chainId, toToken.address, toToken.decimals)
