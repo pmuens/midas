@@ -3,7 +3,11 @@
 import { join } from 'path'
 import { readJSON, writeJSON, ensureDir } from 'fs-extra'
 
-const deploymentsDirPath = join(__dirname, 'deployments')
+export const cache = join(__dirname, 'cache')
+export const artifacts = join(__dirname, 'artifacts')
+export const tests = join(__dirname, 'src', 'tests')
+export const sources = join(__dirname, 'src', 'contracts')
+export const deployments = join(__dirname, 'deployments')
 
 export async function loadArtifact(sources: string, artifacts: string, name: string): Promise<any> {
   const projectRoot = __dirname
@@ -12,8 +16,8 @@ export async function loadArtifact(sources: string, artifacts: string, name: str
 }
 
 export async function saveDeployment(name: string, address: string): Promise<string> {
-  await ensureDir(deploymentsDirPath)
-  const filePath = join(deploymentsDirPath, `${name}.json`)
+  await ensureDir(deployments)
+  const filePath = join(deployments, `${name}.json`)
   await writeJSON(filePath, {
     address
   })
@@ -21,5 +25,5 @@ export async function saveDeployment(name: string, address: string): Promise<str
 }
 
 export async function loadDeployment(name: string): Promise<any> {
-  return readJSON(join(deploymentsDirPath, `${name}.json`))
+  return readJSON(join(deployments, `${name}.json`))
 }

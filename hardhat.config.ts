@@ -5,13 +5,9 @@ import '@nomiclabs/hardhat-web3'
 import dotenv from 'dotenv'
 
 import { getHttpUrl } from './src/utils/infura'
+import { sources, tests, cache, artifacts } from './hardhat.utils'
 
 dotenv.config()
-
-const cache = './cache'
-const artifacts = './artifacts'
-const tests = './src/tests'
-const sources = './src/contracts'
 
 const infuraHttpUrl = getHttpUrl(process.env.INFURA_PROJECT_ID as string)
 const privateKey = process.env.PRIVATE_KEY as string
