@@ -1,37 +1,19 @@
-import { InfuraProvider } from '@ethersproject/providers'
-import { Fetcher, Route, TokenAmount, TradeType, Trade, Token } from '@uniswap/sdk'
-
-import { Base, Token as Towken } from '../classes'
+import { Base, Token } from '../classes'
 import { Exchange } from '../interfaces'
-import { getChainId, getProjectId, getHttpUrl } from '../utils/infura'
 import { Wei } from '../utils/types'
 
 class UniswapV2 extends Base implements Exchange {
-  async getRate(fromToken: Towken, toToken: Towken, amount: Wei): Promise<Wei> {
-    const infuraUrl = getHttpUrl(process.env.INFURA_PROJECT_ID as string)
-    const { utils } = this.ctx.web3
-    const chainId = getChainId(infuraUrl)
-    const projectId = getProjectId(infuraUrl)
-    const amountInBN = utils.toBN(utils.fromWei(amount))
+  async getRate(fromToken: Token, toToken: Token, amount: Wei): Promise<Wei> {
+    const { utils, eth } = this.ctx.web3
 
-    const uniFromToken = new Token(chainId, fromToken.address, fromToken.decimals)
-    const uniToToken = new Token(chainId, toToken.address, toToken.decimals)
+    const { uniswapV2 } = this.ctx.contracts
+    const router02Address = uniswapV2.router02.address
+    const router02Abi = uniswapV2.router02.abi
+    const router02Contract = new eth.Contract(router02Abi, router02Address)
 
-    const preparedAmount = amountInBN.mul(utils.toBN(10 ** fromToken.decimals)).toString()
-
-    const provider = new InfuraProvider(chainId, projectId)
-    const pair = await Fetcher.fetchPairData(uniToToken, uniFromToken, provider)
-
-    const route = new Route([pair], uniFromToken)
-    const trade = new Trade(
-      route,
-      new TokenAmount(uniFromToken, preparedAmount),
-      TradeType.EXACT_INPUT
-    )
-
-    return amountInBN.mul(
-      utils.toBN(utils.toWei(trade.executionPrice.toSignificant(fromToken.decimals)))
-    )
+    const path = [fromToken.address, toToken.address]
+    const result = await router02Contract.methods.getAmountsOut(amount, path).call()
+    return utils.toBN(result[1])
   }
 }
 
