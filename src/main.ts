@@ -5,9 +5,9 @@ import Web3 from 'web3'
 
 import { Token } from './classes'
 import { Context } from './utils/types'
-import { getHttpUrl } from './utils/infura'
+import { getWebsocketUrl } from './utils/infura'
 import contracts from './on-chain/contracts'
-import { Kyber, UniswapV1, UniswapV2 } from './exchanges'
+import { Kyber, UniswapV2 } from './exchanges'
 import { updateEthPrice } from './utils/misc'
 
 process.on('unhandledRejection', (error) => {
@@ -15,9 +15,15 @@ process.on('unhandledRejection', (error) => {
   console.error(error)
 })
 
-const infuraHttpUrl = getHttpUrl(process.env.INFURA_PROJECT_ID as string)
-const provider = new Web3.providers.HttpProvider(infuraHttpUrl)
-const web3 = new Web3(provider)
+const { toBN, toWei, fromWei } = Web3.utils
+
+const httpProvider = new Web3.providers.HttpProvider('https://cloudflare-eth.com/')
+const web3Http = new Web3(httpProvider)
+const web3 = web3Http
+
+const infuraWebsocketUrl = getWebsocketUrl(process.env.INFURA_PROJECT_ID as string)
+const webSocketProvider = new Web3.providers.WebsocketProvider(infuraWebsocketUrl)
+const web3Websocket = new Web3(webSocketProvider)
 
 const { log } = console
 
@@ -31,24 +37,47 @@ async function main() {
   setInterval(() => updateEthPrice(ctx), 15000)
   setInterval(() => log(`Current ETH price: ~${ctx.ether?.toString()} USD`), 20000)
 
-  const ETH = new Token(ctx, contracts.tokens.ETH.address, 'ETH', 18)
-  const WETH = new Token(ctx, contracts.tokens.WETH.address, 'WETH', 18)
-  const DAI = new Token(ctx, contracts.tokens.DAI.address, 'DAI', 18)
-
-  const amount = Web3.utils.toBN(Web3.utils.toWei('2'))
+  const amount = toBN(toWei('2000'))
 
   const kyber = new Kyber(ctx)
-  const kyberRate = await kyber.getRate(WETH, DAI, amount)
-
-  const uniswapV1 = new UniswapV1(ctx)
-  const uniswapV1Rate = await uniswapV1.getRate(ETH, DAI, amount)
-
   const uniswapV2 = new UniswapV2(ctx)
-  const uniswapV2Rate = await uniswapV2.getRate(WETH, DAI, amount)
 
-  log('Kyber:', Web3.utils.fromWei(kyberRate))
-  log('Uniswap (v1):', Web3.utils.fromWei(uniswapV1Rate))
-  log('Uniswap (v2):', Web3.utils.fromWei(uniswapV2Rate))
+  const tokenA = new Token(ctx, contracts.tokens.DAI.address, 'DAI', 18)
+  const tokenB = new Token(ctx, contracts.tokens.WETH.address, 'WETH', 18)
+
+  web3Websocket.eth.subscribe('newBlockHeaders').on('data', async (block) => {
+    log(`New block #${block.number}`)
+
+    const [tokenBFromKyber, tokenBFromUniswapV2] = await Promise.all([
+      kyber.getRate(tokenA, tokenB, amount),
+      uniswapV2.getRate(tokenA, tokenB, amount)
+    ])
+
+    const [tokenAFromKyber, tokenAFromUniswapV2] = await Promise.all([
+      kyber.getRate(tokenB, tokenA, tokenBFromUniswapV2),
+      uniswapV2.getRate(tokenB, tokenA, tokenBFromKyber)
+    ])
+
+    log(
+      `Kyber --> Uniswap v2 - ${tokenA.symbol} input / output: ${fromWei(amount)} / ${fromWei(
+        tokenAFromUniswapV2
+      )}`
+    )
+    log(
+      `Uniswap v2 --> Kyber - ${tokenA.symbol} input / output: ${fromWei(amount)} / ${fromWei(
+        tokenAFromKyber
+      )}`
+    )
+
+    if (tokenAFromUniswapV2.gt(amount)) {
+      log(`Getting more of ${tokenA.symbol} on Uniswap v2!`)
+      log('Kyber --> Uniswap v2')
+    }
+    if (tokenAFromKyber.gt(amount)) {
+      log(`Getting more of ${tokenA.symbol} on Kyber!`)
+      log('Uniswap v2 --> Kyber')
+    }
+  })
 }
 
 main()
